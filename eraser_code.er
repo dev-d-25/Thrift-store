@@ -101,6 +101,7 @@ orders [icon: file-text, color: green] {
   total_amount number
   order_status string (placed, canceled, shipped, delivered, returned)
 
+  address_id fk 
   createdAt timestamp
   updatedAt timestamp
 }
@@ -170,7 +171,7 @@ products.id < order_items.product_id
 
 
 
-
+orders.address_id - addresses.id
 orders.id - shipping.order_id
 
 orders.id < payments.order_id
