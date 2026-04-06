@@ -1,0 +1,176 @@
+
+typeface mono
+title Thrift Store
+
+
+
+users [icon: user, color: blue] {
+  id string pk
+  first_name string
+  last_name string
+  email string
+  phone_no string
+
+  password string
+  email_verification_token string
+  forgot_password_token string
+
+  createdAt timestamp
+  updatedAt timestamp
+}
+
+
+
+addresses [icon: map-pin, color: purple] {
+  id string pk
+  user_id string fk
+  full_address text
+  city string
+  state string
+  pincode number
+
+  createdAt timestamp
+  updatedAt timestamp
+}
+
+
+categories [icon: grid, color: blue] {
+  id string pk
+  name string
+}
+
+
+
+products [icon: gcp-producer-portal, color: blue] {
+  id string pk
+  name string
+  type string (thrift, handmade)
+  category_id string fk
+  price number
+
+  createdAt timestamp
+  updatedAt timestamp
+}
+
+
+
+thrift_products [icon: tag, color: blue] {
+  product_id string pk fk
+  condition string (BEST, GOOD, DAMAGED)
+  size string
+  color string
+  is_sold boolean
+}
+
+
+handmade_products [icon: box, color: blue] {
+  product_id string pk fk
+  stock_quantity number
+  size string
+  color string
+  fabric_type string
+}
+
+
+cart [icon: shopping-cart, color: orange] {
+  id string pk
+  user_id string fk
+
+  createdAt timestamp
+  updatedAt timestamp
+}
+
+
+
+cart_items [icon: package, color: orange] {
+  id string pk
+  cart_id string fk
+  product_id string fk
+  quantity number
+
+  createdAt timestamp
+  updatedAt timestamp
+}
+
+
+
+orders [icon: file-text, color: green] {
+  id string pk
+  user_id string fk
+
+  total_amount number
+  order_status string (placed, canceled, shipped, delivered, returned)
+
+  createdAt timestamp
+  updatedAt timestamp
+}
+
+
+
+order_items [icon: package, color: green] {
+  id string pk
+  order_id string fk
+  product_id string fk
+
+  quantity number
+  price_at_purchase number
+  product_name_snapshot string
+
+  createdAt timestamp
+  updatedAt timestamp
+}
+
+shipping [icon: truck, color: green] {
+  id string pk
+  order_id string fk
+
+  status string (pending, packed, shipped, out_for_delivery, delivered)
+  courier_name string
+  tracking_id string
+
+  shipped_at timestamp
+  delivered_at timestamp
+}
+
+
+payments [icon: credit-card, color: red] {
+  id string pk
+  order_id string fk
+
+  transaction_id string
+  amount number
+  payment_method string (card, UPI, COD)
+  payment_status string (pending, paid, failed, refunded)
+  failure_reason string
+
+  payment_time timestamp
+  createdAt timestamp
+}
+
+
+
+
+
+users.id < addresses.user_id
+users.id < orders.user_id
+users.id - cart.user_id
+
+
+categories.id < products.category_id
+products.id - thrift_products.product_id
+products.id - handmade_products.product_id
+
+
+cart.id < cart_items.cart_id
+products.id < cart_items.product_id
+
+
+orders.id < order_items.order_id
+products.id < order_items.product_id
+
+
+
+
+orders.id - shipping.order_id
+
+orders.id < payments.order_id
